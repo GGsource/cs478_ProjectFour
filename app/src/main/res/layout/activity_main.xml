@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textTopView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            app:layout_constraintDimensionRatio="1:1"
+            >
+
+            <TableRow
+                android:id="@+id/rowOne"
+                android:layout_weight="1"
+                >
+
+                <Button android:id="@+id/buttonTopOne"
+                    android:text="O"
+                    android:layout_width="0sp"
+                    android:layout_height="match_parent"
+                    
+                    />
+
+                <Button android:id="@+id/buttonTopTwo"
+                    android:text="O"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    />
+
+                <Button android:id="@+id/buttonTopThree"
+                    android:text="O"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/rowTwo"
+                android:layout_weight="1"
+                >
+
+                <Button android:id="@+id/buttonMidOne" />
+
+                <Button android:id="@+id/buttonMidTwo" />
+
+                <Button android:id="@+id/buttonMidThree" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/rowThree"
+                android:layout_weight="1"
+                >
+
+                <Button android:id="@+id/buttonBtmOne" />
+
+                <Button android:id="@+id/buttonBtmTwo" />
+
+                <Button android:id="@+id/buttonBtmThree" />
+            </TableRow>
+        </TableLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textBtmView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Testing stesting ssintin!" />
+
+</LinearLayout>

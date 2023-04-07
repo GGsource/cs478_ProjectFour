@@ -5,80 +5,191 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:gravity="center_horizontal"
+    android:divider="@color/purple_200"
+    android:dividerPadding="10sp"
+    android:showDividers="middle"
+    >
 
     <TextView
         android:id="@+id/textTopView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Welcome to CS478 Project 4!"
+        android:textAlignment="center"
+        android:padding="10sp"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <TableLayout
+            android:id="@+id/buttonTable"
             android:layout_width="match_parent"
             android:layout_height="0sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            android:padding="0sp"
+            android:layout_margin="0sp"
             >
 
             <TableRow
                 android:id="@+id/rowOne"
                 android:layout_weight="1"
+                android:padding="0sp"
+                android:layout_margin="0sp"
+
                 >
 
-                <Button android:id="@+id/buttonTopOne"
-                    android:text="O"
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
-                    
-                    />
+                    android:layout_weight="1" >
+                    <ImageView
+                        android:id="@+id/buttonTopOne"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/tile_neutral" />
+                </androidx.cardview.widget.CardView>
 
-                <Button android:id="@+id/buttonTopTwo"
-                    android:text="O"
-                    android:layout_width="wrap_content"
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10sp"
+                    android:layout_width="0sp"
                     android:layout_height="match_parent"
-                    />
+                    android:layout_weight="1" >
 
-                <Button android:id="@+id/buttonTopThree"
-                    android:text="O"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/buttonTopTwo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/tile_neutral" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10sp"
+                    android:layout_width="0sp"
                     android:layout_height="match_parent"
-                    />
+                    android:layout_weight="1" >
+
+                    <ImageView
+                        android:id="@+id/buttonTopThree"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/tile_neutral" />
+                </androidx.cardview.widget.CardView>
+
             </TableRow>
 
             <TableRow
                 android:id="@+id/rowTwo"
-                android:layout_weight="1"
-                >
+                android:layout_weight="1">
 
-                <Button android:id="@+id/buttonMidOne" />
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10sp"
+                    android:layout_width="0sp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+                    <ImageView
+                        android:id="@+id/buttonMidOne"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/tile_neutral" />
+                </androidx.cardview.widget.CardView>
 
-                <Button android:id="@+id/buttonMidTwo" />
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10sp"
+                    android:layout_width="0sp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
 
-                <Button android:id="@+id/buttonMidThree" />
+                    <ImageView
+                        android:id="@+id/buttonMidTwo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/tile_neutral" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10sp"
+                    android:layout_width="0sp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+
+                    <ImageView
+                        android:id="@+id/buttonMidThree"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/tile_neutral" />
+                </androidx.cardview.widget.CardView>
             </TableRow>
 
             <TableRow
                 android:id="@+id/rowThree"
-                android:layout_weight="1"
-                >
+                android:layout_weight="1">
 
-                <Button android:id="@+id/buttonBtmOne" />
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10sp"
+                    android:layout_width="0sp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+                    <ImageView
+                        android:id="@+id/buttonBtmOne"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/tile_neutral"
+                        />
+                </androidx.cardview.widget.CardView>
 
-                <Button android:id="@+id/buttonBtmTwo" />
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10sp"
+                    android:layout_width="0sp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
 
-                <Button android:id="@+id/buttonBtmThree" />
+                    <ImageView
+                        android:id="@+id/buttonBtmTwo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/tile_neutral" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="10sp"
+                    android:layout_width="0sp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+
+                    <ImageView
+                        android:id="@+id/buttonBtmThree"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/tile_neutral" />
+                </androidx.cardview.widget.CardView>
             </TableRow>
         </TableLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/textBtmView"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/buttonStart"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Testing stesting ssintin!" />
+        android:text="@string/start_game" />
 
 </LinearLayout>

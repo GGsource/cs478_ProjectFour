@@ -6,6 +6,7 @@ import androidx.cardview.widget.CardView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
@@ -19,6 +20,9 @@ public class MainActivity extends AppCompatActivity {
     GamerThread threadBlue = new GamerThread();
     private final int RED = 0;
     private final int BLUE = 1;
+    private  int currentTurn = RED;
+    private int setupRedCount = 0;
+    private int setupBlueCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
             TableRow currentRow = (TableRow) buttonTable.getChildAt(rowIndex);
             for (int colIndex = 0; colIndex < 3; colIndex++) {
                 CardView currentCard = (CardView) currentRow.getChildAt(colIndex);
-                currentCard.setOnClickListener(view -> Toast.makeText(MainActivity.this, "Clicked on Row " + buttonTable.indexOfChild(currentRow) + ", Col " + currentRow.indexOfChild(currentCard) , Toast.LENGTH_SHORT).show());
+                currentCard.setOnClickListener(view -> Toast.makeText(MainActivity.this, "Clicked on Row " + buttonTable.indexOfChild(currentRow) + ", Col " + currentRow.indexOfChild(currentCard) + "From: " + Thread.currentThread().getName(), Toast.LENGTH_SHORT).show());
             }
         }
         startBtn = findViewById(R.id.buttonStart);
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                     threadRed.handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            makeMove(RED);
+                            makeMove(RED, threadRed);
                         }
                     });
                 }
@@ -52,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     threadBlue.handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            makeMove(BLUE);
+                            makeMove(BLUE, threadBlue);
                         }
                     });
                 }
@@ -60,15 +64,31 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void makeMove(int TEAM) {
+    private void makeMove(int TEAM, GamerThread givenThread) {
         Random rand = new Random();
         int row = rand.nextInt(3);
         int col = rand.nextInt(3);
-        switch (TEAM) {
-            case RED:
-                break;
-            case BLUE:
-                break;
+        TableRow currentRow = (TableRow) buttonTable.getChildAt(row);
+        CardView currentCard = (CardView) currentRow.getChildAt(col);
+        currentCard.callOnClick(); //Show it being clicked for my own amusement
+        ImageView cell = (ImageView) currentCard.getChildAt(0);
+
+        Runnable updateTile;
+
+        if (TEAM == RED) {
+            updateTile = () -> cell.setBackgroundResource(R.drawable.tile_red);
+        } else {
+            updateTile = () -> cell.setBackgroundResource(R.drawable.tile_blue);
+        }
+
+//        Tell the UI thread what we wanted to do
+        runOnUiThread(updateTile);
+
+//        Wait 3 seconds to make it visible to the users
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }

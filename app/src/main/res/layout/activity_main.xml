@@ -7,9 +7,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity"
     android:gravity="center_horizontal"
-    android:divider="@color/purple_200"
-    android:dividerPadding="10sp"
-    android:showDividers="middle"
     >
 
     <TextView
@@ -53,12 +50,13 @@
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/buttonTopOne"
+                        android:contentDescription="N"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/tile_neutral" />
+                        android:background="@drawable/tile_neutral" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -67,12 +65,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
 
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/buttonTopTwo"
+                        android:contentDescription="N"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/tile_neutral" />
+                        android:background="@drawable/tile_neutral" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -81,12 +80,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
 
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/buttonTopThree"
+                        android:contentDescription="N"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/tile_neutral" />
+                        android:background="@drawable/tile_neutral" />
                 </androidx.cardview.widget.CardView>
 
             </TableRow>
@@ -100,12 +100,13 @@
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/buttonMidOne"
+                        android:contentDescription="N"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/tile_neutral" />
+                        android:background="@drawable/tile_neutral" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -114,12 +115,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
 
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/buttonMidTwo"
+                        android:contentDescription="N"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/tile_neutral" />
+                        android:background="@drawable/tile_neutral" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -128,12 +130,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
 
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/buttonMidThree"
+                        android:contentDescription="N"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/tile_neutral" />
+                        android:background="@drawable/tile_neutral" />
                 </androidx.cardview.widget.CardView>
             </TableRow>
 
@@ -146,12 +149,13 @@
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/buttonBtmOne"
+                        android:contentDescription="N"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/tile_neutral"
+                        android:background="@drawable/tile_neutral"
                         />
                 </androidx.cardview.widget.CardView>
 
@@ -161,12 +165,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
 
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/buttonBtmTwo"
+                        android:contentDescription="N"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/tile_neutral" />
+                        android:background="@drawable/tile_neutral" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -175,12 +180,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
 
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/buttonBtmThree"
+                        android:contentDescription="N"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/tile_neutral" />
+                        android:background="@drawable/tile_neutral" />
                 </androidx.cardview.widget.CardView>
             </TableRow>
         </TableLayout>
@@ -191,5 +197,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start_game" />
+
+    <TextView
+        android:id="@+id/announceView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
 
 </LinearLayout>

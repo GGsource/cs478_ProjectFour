@@ -7,12 +7,19 @@
     android:orientation="vertical"
     tools:context=".MainActivity"
     android:gravity="center_horizontal"
+    android:background="@drawable/red_blue_gradient"
     >
 
     <TextView
         android:id="@+id/textTopView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/white"
+        android:shadowDy="6"
+        android:shadowColor="@color/black"
+        android:shadowDx="1"
+        android:shadowRadius="1"
         android:text="Welcome to CS478 Project 4!"
         android:textAlignment="center"
         android:padding="10sp"
@@ -47,6 +54,7 @@
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10sp"
+                    android:layout_margin="2sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
@@ -61,6 +69,7 @@
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10sp"
+                    android:layout_margin="2sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
@@ -76,6 +85,7 @@
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10sp"
+                    android:layout_margin="2sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
@@ -97,6 +107,7 @@
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10sp"
+                    android:layout_margin="2sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
@@ -111,6 +122,7 @@
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10sp"
+                    android:layout_margin="2sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
@@ -126,6 +138,7 @@
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10sp"
+                    android:layout_margin="2sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
@@ -146,6 +159,7 @@
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10sp"
+                    android:layout_margin="2sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
@@ -161,6 +175,7 @@
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10sp"
+                    android:layout_margin="2sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
@@ -176,6 +191,7 @@
 
                 <androidx.cardview.widget.CardView
                     app:cardCornerRadius="10sp"
+                    android:layout_margin="2sp"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" >
@@ -192,16 +208,31 @@
         </TableLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/buttonStart"
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="10sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/start_game" />
+        android:layout_height="wrap_content" >
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20sp"
+            android:textColor="@color/white"
+            android:text="@string/start_game" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/announceView"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:shadowDy="6"
+        android:shadowColor="@color/black"
+        android:shadowDx="1"
+        android:shadowRadius="1"
+        android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="@string/press_start" />
 
 </LinearLayout>

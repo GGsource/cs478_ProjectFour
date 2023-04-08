@@ -8,6 +8,7 @@ import android.util.Log;
 public class GamerThread extends Thread{
     private static final String TAG = "GamerThread";
 
+    public Looper looper;
     public Handler handler;
 
     public final int THREAD_TEAM;
@@ -19,6 +20,8 @@ public class GamerThread extends Thread{
     @Override
     public void run() {
         Looper.prepare();
+
+        looper = Looper.myLooper();
 
         handler = new Handler();
         Log.d(TAG, "run: Thread Started: " + this.getName());

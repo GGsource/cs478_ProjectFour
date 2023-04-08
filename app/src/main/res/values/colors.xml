@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="teamRed">#ad1c36</color>
     <color name="teamBlue">#2f1cad</color>
+    <color name="teamNeutral">#656565</color>
 </resources>

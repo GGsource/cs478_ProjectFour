@@ -8,6 +8,9 @@ import androidx.core.content.ContextCompat;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -20,25 +23,27 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    TableLayout buttonTable;
+    public TableLayout buttonTable;
     AppCompatButton startBtn;
     TextView announceView;
     private final int RED = 0;
     private final int BLUE = 1;
     GamerThread threadRed = new GamerThread(RED);
     GamerThread threadBlue = new GamerThread(BLUE);
-    private  int lastPlayerMoved = RED;
     private int setupRedCount = 0;
     private int setupBlueCount = 0;
-    private ArrayList<ImageButton> buttonListRed = new ArrayList<>();
-    private ArrayList<ImageButton> buttonListBlue = new ArrayList<>();
-
-    private int delayMS = 2000;
+    public ArrayList<ImageButton> buttonListRed = new ArrayList<>();
+    public ArrayList<ImageButton> buttonListBlue = new ArrayList<>();
+    private int delayMS = 200;
+    private GamerHandler uiHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        uiHandler = new GamerHandler(getApplicationContext());
+        Log.d("GamerHandlerInstantiation", "onCreate: GamerHandler tied to thread " + uiHandler.getLooper().getThread().getName() );
 
         buttonTable = findViewById(R.id.buttonTable);
 
@@ -66,29 +71,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //            Reset all in case a previous game was taking place
+                setupRedCount = 0;
+                setupBlueCount = 0;
+                threadBlue.handler.removeCallbacksAndMessages(null);
+                threadRed.handler.removeCallbacksAndMessages(null);
+                uiHandler.removeCallbacksAndMessages(null);
+
                 boolean needsReset = buttonListBlue.size() > 0 || buttonListRed.size() > 0;
                 if (needsReset) {
-                    threadRed.looper.quitSafely();
-                    threadBlue.looper.quitSafely();
-                    threadRed = new GamerThread(RED);
-                    threadBlue = new GamerThread(BLUE);
-                    threadRed.start();
-                    threadBlue.start();
-                    setupRedCount = 0;
-                    for (int i = buttonListRed.size()-1; i >= 0; i--) {
-                        ImageButton curRed = buttonListRed.remove(i);
-                        curRed.setContentDescription("N");
-                        curRed.setBackgroundResource(R.drawable.tile_neutral);
+                    for (int i = 0; i < buttonTable.getChildCount(); i++) {
+                        TableRow tr = (TableRow) buttonTable.getChildAt(i);
+                        for (int j = 0; j < tr.getChildCount(); j++) {
+                            ImageButton btn = (ImageButton) ((CardView)tr.getChildAt(j)).getChildAt(0);
+                            btn.setContentDescription("N");
+                            btn.setBackgroundResource(R.drawable.tile_neutral);
+                        }
                     }
-                    setupBlueCount = 0;
-                    for (int i = buttonListBlue.size()-1; i >= 0; i--) {
-                        ImageButton curBlue = buttonListBlue.remove(i);
-                        curBlue.setContentDescription("N");
-                        curBlue.setBackgroundResource(R.drawable.tile_neutral);
-                    }
+                    buttonListRed.clear();
+                    buttonListBlue.clear();
                     announceView.setTextColor(Color.WHITE);
                     announceView.setText("Game Reset. Deciding who goes first...");
                     startBtn.setBackgroundDrawable(gd);
+                    return;
                 }
                 startBtn.setText("Restart Game");
                 GamerThread firstPlayer;
@@ -101,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                 firstPlayer.handler.post(() -> makeInitialPlacements(firstPlayer.THREAD_TEAM, firstPlayer));
             }
         });
-
         announceView = findViewById(R.id.announceView);
     }
 
@@ -127,8 +130,6 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.d("GamerMove", "makeMove: About to send ui modification request from " + givenThread.getName());
 
-        lastPlayerMoved = TEAM;
-
         Runnable updateTile;
         ImageButton finalCell = cell;
 
@@ -137,10 +138,11 @@ public class MainActivity extends AppCompatActivity {
                 buttonListRed.add(finalCell);
                 finalCell.setBackgroundResource(R.drawable.tile_red);
                 finalCell.setContentDescription("R");
-                Log.d("GamerUIPost", "makeMove: Just modified UI with Red move from " + Thread.currentThread().getName());
+                Log.d("GamerUIPost", "makeMove: Just modified UI with Red move from " + Thread.currentThread().getName() + "On orders of Team " + TEAM);
                 startBtn.setBackgroundColor(ContextCompat.getColor(this, R.color.teamRed));
                 if (isWinner(TEAM)){
                     announceView.setText("Red Just won!");
+                    announceWinner(TEAM);
                     announceView.setTextColor(ContextCompat.getColor(this, R.color.teamRed));
                     startBtn.setText("Start New Game");
                     return;
@@ -155,10 +157,11 @@ public class MainActivity extends AppCompatActivity {
                 buttonListBlue.add(finalCell);
                 finalCell.setBackgroundResource(R.drawable.tile_blue);
                 finalCell.setContentDescription("B");
-                Log.d("GamerUIPost", "makeMove: Just modified UI with Blue move from " + Thread.currentThread().getName());
+                Log.d("GamerUIPost", "makeMove: Just modified UI with Blue move from " + Thread.currentThread().getName() + "On orders of Team " + TEAM);
                 startBtn.setBackgroundColor(ContextCompat.getColor(this, R.color.teamBlue));
                 if (isWinner(TEAM)){
                     announceView.setText("Blue Just won!");
+                    announceWinner(TEAM);
                     announceView.setTextColor(ContextCompat.getColor(this, R.color.teamBlue));
                     startBtn.setText("Start New Game");
                     return;
@@ -234,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private synchronized void takeTurn(int givenTEAM) {
+        if (buttonListRed.size() == 0 || buttonListBlue.size() == 0) return;
 //        givenTeam must now move one of their tiles to an empty spot
         Random rand = new Random();
         ImageButton destinationCell;
@@ -281,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
                         if (isWinner(givenTEAM)) {
 //                    This move resulted in a winner!
                             announceView.setText("Red Just won!");
+                            announceWinner(givenTEAM);
                             announceView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.teamRed));
                             startBtn.setText("Start New Game");
                             return;
@@ -297,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
                         if (isWinner(givenTEAM)) {
 //                    This move resulted in a winner!
                             announceView.setText("Blue Just won!");
+                            announceWinner(givenTEAM);
                             announceView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.teamBlue));
                             startBtn.setText("Start New Game");
                             return;
@@ -308,5 +314,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void announceWinner(int TEAM) {
+        Log.d("GamerWinAnnouncement", "announceWinner: About to announce Team "+ TEAM + " Won...");
+        Message msg = uiHandler.obtainMessage();
+        msg.what = 0; // 0 = MESSAGE
+        Bundle b = new Bundle();
+        if (TEAM == RED)
+            b.putString("MSG", "Red Wins the Match!");
+        else
+            b.putString("MSG", "Blue Wins the Match!");
+        msg.setData(b);
+        Log.d("GamerWinBundleSend", "announceWinner: Sanity Check, just added string '" + b.getString("MSG") + "' to bundle.");
+        uiHandler.sendMessage(msg);
     }
 }

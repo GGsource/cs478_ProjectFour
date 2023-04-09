@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
     public TableLayout buttonTable;
@@ -27,14 +26,16 @@ public class MainActivity extends AppCompatActivity {
     TextView announceView;
     private final int RED = 0;
     private final int BLUE = 1;
+    final Object gamerLock = new Object();
     GamerThread threadRed = new GamerThread(RED);
     GamerThread threadBlue = new GamerThread(BLUE);
     private int setupRedCount = 0;
     private int setupBlueCount = 0;
     public ArrayList<ImageButton> buttonListRed = new ArrayList<>();
     public ArrayList<ImageButton> buttonListBlue = new ArrayList<>();
-    private int delayMS = 500;
+    private final int delayMS = 2000;
     private GamerHandler uiHandler;
+    boolean isReset = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,18 +67,19 @@ public class MainActivity extends AppCompatActivity {
 //        startBtn.setForeground(gd);
         startBtn.setBackground(gd);
         startBtn.setOnClickListener(new View.OnClickListener() {
-//            FIXME: Clicking start while match is happening causes crash. Because reset assumes theres 3 places already
             @Override
             public void onClick(View view) {
 //            Reset all in case a previous game was taking place
-                setupRedCount = 0;
-                setupBlueCount = 0;
-                threadBlue.handler.removeCallbacksAndMessages(null);
-                threadRed.handler.removeCallbacksAndMessages(null);
-                uiHandler.removeCallbacksAndMessages(null);
-
                 boolean needsReset = buttonListBlue.size() > 0 || buttonListRed.size() > 0;
+                Log.d("GamerReset", "Clicked Reset: needsReset was: " + needsReset);
                 if (needsReset) {
+                    isReset = true;
+                    setupRedCount = 0;
+                    setupBlueCount = 0;
+//                    threadBlue.handler.removeCallbacksAndMessages(null);
+//                    threadRed.handler.removeCallbacksAndMessages(null);
+//                    uiHandler.removeCallbacksAndMessages(null);
+
                     for (int i = 0; i < buttonTable.getChildCount(); i++) {
                         TableRow tr = (TableRow) buttonTable.getChildAt(i);
                         for (int j = 0; j < tr.getChildCount(); j++) {
@@ -89,19 +91,27 @@ public class MainActivity extends AppCompatActivity {
                     buttonListRed.clear();
                     buttonListBlue.clear();
                     announceView.setTextColor(Color.WHITE);
-                    announceView.setText("Game Reset. Deciding who goes first...");
+                    announceView.setText("Game Ended. Press again to restart.");
                     startBtn.setBackgroundDrawable(gd);
+                    startBtn.setText("Restart Game");
                     return;
                 }
-                startBtn.setText("Restart Game");
+                isReset = false;
+                startBtn.setText("End Game");
                 GamerThread firstPlayer;
+                GamerThread secondPlayer;
                 if (new Random().nextBoolean()) {
                     firstPlayer = threadRed;
+//                    secondPlayer = threadBlue;
                 }
                 else {
                     firstPlayer = threadBlue;
+//                    secondPlayer = threadRed;
                 }
                 firstPlayer.handler.post(() -> makeInitialPlacements(firstPlayer.THREAD_TEAM, firstPlayer));
+//                for (int i = 0; i < 5; i++){
+//                    secondPlayer.handler.post(() -> makeInitialPlacements(secondPlayer.THREAD_TEAM, secondPlayer));
+//                }
             }
         });
         announceView = findViewById(R.id.announceView);
@@ -123,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
             CardView currentCard = (CardView) currentRow.getChildAt(col);
             cell = (ImageButton) currentCard.getChildAt(0);
             if (cell.getContentDescription().toString().equals("N")) {
-                currentCard.callOnClick(); //Show it being clicked for my own amusement
                 break;
             }
         }
@@ -134,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (TEAM == RED) {
             updateTile = () -> {
+                if (isReset) return;
                 buttonListRed.add(finalCell);
                 finalCell.setBackgroundResource(R.drawable.tile_red);
                 finalCell.setContentDescription("R");
@@ -153,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
             setupRedCount += 1;
         } else {
             updateTile = () -> {
+                if (isReset) return;
                 buttonListBlue.add(finalCell);
                 finalCell.setBackgroundResource(R.drawable.tile_blue);
                 finalCell.setContentDescription("B");
@@ -261,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (isReset) return;
                 finalDestinationCell.setContentDescription(sourceCell.getContentDescription());
                 sourceCell.setContentDescription("N");
                 sourceCell.setBackgroundResource(R.drawable.tile_neutral);
@@ -373,11 +385,12 @@ public class MainActivity extends AppCompatActivity {
         neighbors.add(getButtonFromTable(newRow,newCol+1));
         neighbors.add(getButtonFromTable(newRow-1,newCol));
         neighbors.add(getButtonFromTable(newRow,newCol-1));
-//        Randomly pick a direction neighboring the new cell
+//        Randomly pick a neighboring cell
         Random rand = new Random();
         ImageButton chosenNeighbor = null;
         boolean noEmptyNeighbors = false;
         while (chosenNeighbor == null) {
+//            If we've run out of neighbors that means none were valid, default to random empty.
             if (neighbors.size() == 0) {
                 noEmptyNeighbors = true;
                 break;

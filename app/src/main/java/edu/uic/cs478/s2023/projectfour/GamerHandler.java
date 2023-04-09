@@ -11,6 +11,7 @@ import android.widget.Toast;
 public class GamerHandler extends Handler {
     private static final String TAG = "GamerHandler";
     public static final int MESSAGE = 0;
+    public static final int RUNNABLE = 1;
     Handler mainHandler = new Handler(Looper.getMainLooper());
     Context ctx;
     GamerHandler(Context givenCtx) {
@@ -21,11 +22,11 @@ public class GamerHandler extends Handler {
     public void handleMessage(Message msg) {
         switch (msg.what) {
             case MESSAGE:
-                        Bundle bundle = msg.getData();
-                        String toastMsg = bundle.getString("MSG");
-                        Log.d(TAG, "run: About to make a toast with " + toastMsg);
-                        Toast.makeText(ctx, toastMsg, Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "Congratulated player on win.");
+                Bundle bundle = msg.getData();
+                String toastMsg = bundle.getString("MSG");
+//                        Log.d(TAG, "run: About to make a toast with " + toastMsg);
+                Toast.makeText(ctx, toastMsg, Toast.LENGTH_LONG).show();
+//                        Log.d(TAG, "Congratulated player on win.");
                 break;
         }
     }

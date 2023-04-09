@@ -9,7 +9,7 @@ public class GamerThread extends Thread{
     private static final String TAG = "GamerThread";
 
     public Looper looper;
-    public Handler handler;
+    public GamerHandler handler;
 
     public final int THREAD_TEAM;
 
@@ -23,7 +23,7 @@ public class GamerThread extends Thread{
 
         looper = Looper.myLooper();
 
-        handler = new Handler();
+        handler = new GamerHandler(null);
         Log.d(TAG, "run: Thread Started: " + this.getName());
 
         Looper.loop();

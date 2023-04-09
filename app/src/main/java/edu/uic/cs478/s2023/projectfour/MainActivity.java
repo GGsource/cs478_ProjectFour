@@ -1,3 +1,34 @@
+/*
+    |~~~~~~~CS 478 - Project 4: Three Men Morris ~~~~~~~|
+    Course: CS 478 Spring 2023
+    Name: Geovani Gonzalez
+    NetID: ggonza55@uic.edu | UIN: 657437605
+    |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+    Description: Two threads are playing a game of TMM
+    against each other. TMM is essentially tic tac toe,
+    but after placing 3 marks, from then on you can only
+    move your existing marks to empty squares. The first
+    player is randomly chosen and makes their turn, then
+    The threads are programmed to exchange turns one at
+    a time until someone gets 3 in a row horizontally or
+    vertically. The button below the table can be pressed
+    to end the game and pressed again to restart a new match.
+    |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+    Completed: April 9th, 2023
+    |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+    Notes:
+    1. It is not specified who should go first, so I
+    have set it up to randomly choose one of the teams,
+    which seems fairer to me.
+    2. When restarting a new match, the player must first
+    reset the game, then start the new one, meaning they
+    must click the button twice. The text on the button
+    and below it should make this clear.
+    3. Message is used for announcing the winner via
+    toast, Runnable is used for making a move on the
+    table.
+ */
+
 package edu.uic.cs478.s2023.projectfour;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private int setupBlueCount = 0;
     public ArrayList<ImageButton> buttonListRed = new ArrayList<>();
     public ArrayList<ImageButton> buttonListBlue = new ArrayList<>();
-    private final int delayMS = 2000;
+    private final int delayMS = 500;
     private GamerHandler uiHandler;
     boolean isReset = false;
 
@@ -91,13 +122,14 @@ public class MainActivity extends AppCompatActivity {
                     buttonListRed.clear();
                     buttonListBlue.clear();
                     announceView.setTextColor(Color.WHITE);
-                    announceView.setText("Game Ended. Press again to restart.");
                     startBtn.setBackgroundDrawable(gd);
+                    announceView.setText("Game Ended. Press again to restart.");
                     startBtn.setText("Restart Game");
                     return;
                 }
                 isReset = false;
                 startBtn.setText("End Game");
+                announceView.setText("Game restarted. Picking who goes first...");
                 GamerThread firstPlayer;
                 GamerThread secondPlayer;
                 if (new Random().nextBoolean()) {

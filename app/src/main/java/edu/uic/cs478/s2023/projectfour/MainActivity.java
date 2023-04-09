@@ -8,8 +8,6 @@ import androidx.core.content.ContextCompat;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +19,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
     public TableLayout buttonTable;
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private int setupBlueCount = 0;
     public ArrayList<ImageButton> buttonListRed = new ArrayList<>();
     public ArrayList<ImageButton> buttonListBlue = new ArrayList<>();
-    private int delayMS = 200;
+    private int delayMS = 500;
     private GamerHandler uiHandler;
 
     @Override
@@ -237,28 +236,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private synchronized void takeTurn(int givenTEAM) {
-        if (buttonListRed.size() == 0 || buttonListBlue.size() == 0) return;
 //        givenTeam must now move one of their tiles to an empty spot
-        Random rand = new Random();
         ImageButton destinationCell;
-        while (true) {
-            int row = rand.nextInt(3);
-            int col = rand.nextInt(3);
-            TableRow currentRow = (TableRow) buttonTable.getChildAt(row);
-            CardView currentCard = (CardView) currentRow.getChildAt(col);
-            destinationCell = (ImageButton) currentCard.getChildAt(0);
-            if (destinationCell.getContentDescription().toString().equals("N")) {
-                break;
-            }
-        }
-//        We now have a valid empty destination, pick what place will be moved from
-        int replaceNdx = rand.nextInt(3);
         ImageButton sourceCell;
         if (givenTEAM == RED) {
-            sourceCell = buttonListRed.get(replaceNdx);
-        }
-        else {
-            sourceCell = buttonListBlue.get(replaceNdx);
+            ImageButton[] cells = redRealRandomStrategy(true);
+            destinationCell = cells[0];
+            sourceCell = cells[1];
+        } else {
+            ImageButton[] cells = blueBestBudsStrategy();
+            destinationCell = cells[0];
+            sourceCell = cells[1];
         }
 
         //        Wait 1 seconds to make it visible to the users
@@ -328,5 +316,93 @@ public class MainActivity extends AppCompatActivity {
         msg.setData(b);
         Log.d("GamerWinBundleSend", "announceWinner: Sanity Check, just added string '" + b.getString("MSG") + "' to bundle.");
         uiHandler.sendMessage(msg);
+    }
+
+    private ImageButton[] redRealRandomStrategy(boolean isRed) {
+//        Red team's strategy is pure randomness. It finds an empty spot and moves a random piece of its own there.
+        ImageButton[] cells = new ImageButton[2];
+        Random rand = new Random();
+        ImageButton dCell;
+        while (true) {
+            int row = rand.nextInt(3);
+            int col = rand.nextInt(3);
+            TableRow currentRow = (TableRow) buttonTable.getChildAt(row);
+            CardView currentCard = (CardView) currentRow.getChildAt(col);
+            dCell = (ImageButton) currentCard.getChildAt(0);
+            if (dCell.getContentDescription().toString().equals("N")) {
+                cells[0] = dCell;
+                break;
+            }
+        }
+
+//        We now have a valid empty destination, pick what place will be moved from randomly
+        ImageButton sCell;
+        int replaceNdx = rand.nextInt(3);
+        if (isRed)
+            sCell = buttonListRed.get(replaceNdx);
+        else
+            sCell = buttonListBlue.get(replaceNdx);
+        cells[1] = sCell;
+        return cells;
+    }
+
+    private ImageButton[] blueBestBudsStrategy() {
+//        Blue team's strategy is to always stay near its own pieces. It will try to move its oldest
+//        placement to be adjacent to its newest, ideally giving the appearance of movement as
+//        a united mass. Best buds.
+        ImageButton[] cells = new ImageButton[2];
+        ImageButton oldestBlueCell = buttonListBlue.get(0); //0 Should be the oldest
+        cells[1] = oldestBlueCell;
+
+        ImageButton newestBlueCell = buttonListBlue.get(2); //2 should be the newest
+        int newCol = 0;
+        int newRow = 0;
+//        We need to know its row and column to find neighbors
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                ImageButton curCell = getButtonFromTable(i,j);
+                if (curCell == newestBlueCell){
+                    newRow = i;
+                    newCol = j;
+                }
+            }
+        }
+//        Make a stack of the possible neighbors.
+        ArrayList<ImageButton> neighbors = new ArrayList<>();
+        neighbors.add(getButtonFromTable(newRow+1,newCol));
+        neighbors.add(getButtonFromTable(newRow,newCol+1));
+        neighbors.add(getButtonFromTable(newRow-1,newCol));
+        neighbors.add(getButtonFromTable(newRow,newCol-1));
+//        Randomly pick a direction neighboring the new cell
+        Random rand = new Random();
+        ImageButton chosenNeighbor = null;
+        boolean noEmptyNeighbors = false;
+        while (chosenNeighbor == null) {
+            if (neighbors.size() == 0) {
+                noEmptyNeighbors = true;
+                break;
+            }
+            int ndx = rand.nextInt(neighbors.size());
+            chosenNeighbor = neighbors.remove(ndx);
+            if (chosenNeighbor != null && chosenNeighbor.getContentDescription() != "N")
+                chosenNeighbor = null;
+        }
+//        If all neighbors were occupied we fallback on Red's Random strategy.
+        if (noEmptyNeighbors)
+            return redRealRandomStrategy(false);
+
+        cells[0] = chosenNeighbor;
+        return cells;
+    }
+
+    private ImageButton getButtonFromTable(int row, int col){
+        ImageButton btn;
+        try {
+            btn = (ImageButton) ((CardView)((TableRow) buttonTable.getChildAt(row)).getChildAt(col)).getChildAt(0);
+        } catch (Exception e) {
+            btn = null;
+        }
+
+        return btn;
     }
 }
